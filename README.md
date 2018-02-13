@@ -1,55 +1,58 @@
-# MicroMechBoard
-This project is the teensy code for Will Yager's custom mechanical keyboard
-project. ([blog post](http://yager.io/keyboard/keyboard.html))
+# The Scientific Raspbian Calcuberry Pi
 
-The code serves two functions:
+This project is an attempt at making an affordable, DIY scientific calculator that
+offers better performance and results in more productivity than the (IMO) overpriced
+TI calculators that many students are forced to use.
 
-1. If plugged into USB, the device will act as a stand-alone keyboard with 33
-keys. ("The master")
-2. If a second device is plugged into that first device, the two devices will
-share relevant information over I2C. In this way, two of these devices can be
-connected to form a 66-key keyboard. With some modification to the firmware and
-the I2C pull-up resistors, one could theoretically chain up to 129 boards
-together (I believe).
+The main components of this repository are listed below:
 
-## Building/installing
-1. Install `avr-gcc`.
-2. Install Teensy loader.
-3. `cd src`
-4. `make`
-5. Drag `main.hex` into Teensy loader.
-6. Program Teensy.
+## Parts (incomplete)
 
-## Modifying key layout
-1. Modify `keys[]` in `KeyMapper.cpp`.
-2. Replace values like `KEY_A` with other values from `keylayouts.h`.
+- Raspberry Pi model B
+- 2.8" 320x240 touchscreen display
+- 10,000 mAh battery
+- Keyboard PCB
+- Kailh Burnt Orange box switches
+- PBT key caps
+- Teensy 2.0 microcontroller
+- 3 150 Ohm resistors
+- 2 5000 Ohm resistors
+- screws/threaded cylinders
+- 2 small USB -> micro cables
+- 1 nice toggle switch
 
-This should be fairly simple to figure out. Within the file, I have `keys[]`
-laid out just like the physical keys.
+## Assembly
 
-## Program structure
+This project has not been completed yet, and parts of it are still being designed, but the
+assembly will mainly consist of screws, threaded cylinders, and a somewhat complex 3d printed
+case with a sliding panel for "maintenance".
 
-### main.cpp
+## Keyboard
 
-```
-       Start USB/I2C
-       Determine master/slave status
-       
-       forever:
-              led_status
-              => get hardware state from HardwareController
-              => debounce buttons with ButtonDebouncer
-              => detect changes in buttons with ButtonDeltaDetector
-              => map button changes to key changes with KeyMapper
-              =: key_changes
+### Design
 
-              led_status
-              => update the slave (if it exists) with the SlaveNotifier
-              =: slave_key_changes
+The keyboard for this project is based on [Will Yager's custom mechanical keyboard](https://github.com/wyager/MicroMechBoard)
+project ([blog post](http://yager.io/keyboard/keyboard.html)) for a full split keyboard with
+two halves. We will only use one half per calculator, which is close to the ideal size for a scientific
+calculator.
 
-              key_changes, slave_key_changes
-              => notify the master (over USB or I2C) of key changes with the MasterNotifier
-              =: led_status
-              
+### Firmware
 
-```
+Incomplete, but will be made for a Teensy 2.0, the same as the original project by Will Yager.
+
+### Key Bindings
+
+As stated, the project is not complete, so these plans may change. A regular scientific calculator
+has 50 keys, however this one will have 33, so we will need to make a few compromises. The "2nd",
+"Alpha", and "Power" keys will be mapped to the three backlit keys on the keyboard and will light up
+when active, however the "power" button will actually put the device to sleep (and light up when in
+sleep mode - there will be a physical switch to turn it completely off and on). To save room, the
+letter keys will still be accessible in alpha mode, but will consist of a T9 layout on the number
+keys, not across the entire board like is common for most TI-86 calculators.
+
+## Software
+
+As of now, I am not sure what software I plan on using, but I will attempt to make the keyboard
+settings work universally - and not for any specific piece of software - as much as possible
+(for example, the sin/cos/tan buttons will print out the characters "sin(", but not the end
+parentheses, as some software will insert them automatically.
